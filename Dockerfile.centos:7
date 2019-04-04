@@ -45,7 +45,7 @@ gpgcheck = False\n\
 name=pmix\n\
 baseurl=https://build.hpdd.intel.com/job/daos-stack/job/pmix/job/master/lastSuccessfulBuild/artifact/artifacts/\n\
 enabled=1\n\
-gpgcheck = False\n\"\"\"" >> /etc/mock/default.cfg
+gpgcheck = False\n\
 [pmdk]\n\
 name=pmdk\n\
 baseurl=https://build.hpdd.intel.com/job/daos-stack/job/pmdk/job/master/lastSuccessfulBuild/artifact/artifacts/\n\

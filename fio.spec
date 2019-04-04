@@ -54,7 +54,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/*
 
 %changelog
-* Thu Apr 04 2018 Brian J. Murrell <brian.murrell@intel.com> 3.3-1
+* Thu Apr 04 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-1
 - New upstream version
 
 * Tue Oct 24 2017 Eric Sandeen <sandeen@redhat.com> 3.1-2
