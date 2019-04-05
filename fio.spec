@@ -1,6 +1,6 @@
 Name:		fio
 Version:	3.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Multithreaded IO generation tool
 
 Group:		Applications/System
@@ -30,6 +30,12 @@ otherwise parameters given to them overriding that setting is given.
 The typical use of fio is to write a job file matching the io load
 one wants to simulate.
 
+%package devel
+Summary:	FIO devel package
+
+%description devel
+FIO devel
+
 %prep
 %setup -q
 
@@ -40,6 +46,19 @@ EXTFLAGS="$RPM_OPT_FLAGS" make V=1 %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make install prefix=%{_prefix} mandir=%{_mandir} DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
+mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}
+cp config-host.h minmax.h helpers.h \
+  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/
+mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/compiler/
+cp compiler/compiler.h compiler/compiler-gcc4.h \
+  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/compiler/
+mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/lib/
+cp lib/types.h lib/ffz.h \
+  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/lib/
+mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/os/
+cp os/os-linux-syscall.h $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/os/
+mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/oslib/
+cp oslib/getopt.h $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/oslib/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -53,7 +72,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 %{_datadir}/%{name}/*
 
+%files devel
+%{_usrsrc}/debug/%{name}-%{version}/config-host.h
+
 %changelog
+* Fri Apr 05 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-2
+- Add a (hacky) -devel subpackage to provide the source files
+  that spdk wants
+- Add BuildRequires: to install them
+
 * Thu Apr 04 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-1
 - New upstream version
 
