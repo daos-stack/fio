@@ -64,7 +64,7 @@ RUN zypper --non-interactive install libcmocka-devel
 
 # fio
 RUN zypper --non-interactive install libpmem-devel libaio-devel     \
-                                     libpmemblk-devel librbd1-devel \
+                                     libpmemblk-devel librbd-devel  \
                                      libnuma-devel
 
 # force an upgrade to get any newly built RPMs

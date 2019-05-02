@@ -16,7 +16,13 @@ BuildRequires:	zlib-devel
 BuildRequires:	libpmem-devel
 BuildRequires:	libpmemblk-devel
 %endif
+%if (0%{?rhel} >= 7)
 BuildRequires:	librbd1-devel
+%else
+%if (0%{?suse_version} > 1315)
+BuildRequires:	librbd-devel
+%endif
+%endif
 %ifnarch %{arm} s390 s390x
 %if (0%{?rhel} >= 7)
 BuildRequires:	numactl-devel
