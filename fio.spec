@@ -1,6 +1,6 @@
 Name:		fio
 Version:	3.3
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Multithreaded IO generation tool
 
 Group:		Applications/System
@@ -18,8 +18,14 @@ BuildRequires:	libpmemblk-devel
 %endif
 BuildRequires:	librbd1-devel
 %ifnarch %{arm} s390 s390x
+%if (0%{?rhel} >= 7)
 BuildRequires:	numactl-devel
+%else
+%if (0%{?suse_version} > 1315)
+BuildRequires:	libnuma-devel
+%endif
 BuildRequires:	librdmacm-devel
+%endif
 %endif
 
 %description
@@ -46,19 +52,6 @@ EXTFLAGS="$RPM_OPT_FLAGS" make V=1 %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make install prefix=%{_prefix} mandir=%{_mandir} DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}
-cp config-host.h minmax.h helpers.h \
-  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/compiler/
-cp compiler/compiler.h compiler/compiler-gcc4.h \
-  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/compiler/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/lib/
-cp lib/types.h lib/ffz.h \
-  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/lib/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/os/
-cp os/os-linux-syscall.h $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/os/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/oslib/
-cp oslib/getopt.h $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/oslib/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -73,9 +66,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/*
 
 %files devel
-%{_usrsrc}/debug/%{name}-%{version}/config-host.h
+%{_usrsrc}/debug/%{name}-%{version}
 
 %changelog
+* Thu May 02 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-3
+- Revert most of the hacky -devel subpackage copying as the files
+  already seem to be there
+
 * Fri Apr 05 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-2
 - Add a (hacky) -devel subpackage to provide the source files
   that spdk wants
