@@ -57,6 +57,8 @@ FIO sources
 %prep
 %setup -q
 find . -type f > source_files.txt
+# fix hard-coded /usr/bin/bash
+sed -i -e "s|/usr/bin/bash|$(command -v bash)|g" tools/genfio
 
 %build
 ./configure --disable-optimizations
@@ -95,6 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu May 02 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-3
 - Create an fio-src package for spdk
 - Adjust BuildRequires: for SLES 12.3
+- fix hard-coded /usr/bin/bash
 
 * Fri Apr 05 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-2
 - Add a (hacky) -devel subpackage to provide the source files
