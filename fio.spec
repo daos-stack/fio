@@ -48,8 +48,15 @@ Summary:	FIO devel package
 %description devel
 FIO devel
 
+%package src
+Summary:	FIO sources package
+
+%description src
+FIO sources
+
 %prep
 %setup -q
+find . -type f > source_files.txt
 
 %build
 ./configure --disable-optimizations
@@ -58,19 +65,13 @@ EXTFLAGS="$RPM_OPT_FLAGS" make V=1 %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make install prefix=%{_prefix} mandir=%{_mandir} DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}
-cp config-host.h minmax.h helpers.h \
-  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/compiler/
-cp compiler/compiler.h compiler/compiler-gcc4.h \
-  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/compiler/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/lib/
-cp lib/types.h lib/ffz.h \
-  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/lib/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/os/
-cp os/os-linux-syscall.h $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/os/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/oslib/
-cp oslib/getopt.h $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/oslib/
+mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/%{name}-%{version}/
+while read f; do
+    mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/%{name}-%{version}/${f%/*}
+    ln $f $RPM_BUILD_ROOT%{_usrsrc}/%{name}-%{version}/$f
+done < source_files.txt
+ln config-host.h $RPM_BUILD_ROOT%{_usrsrc}/%{name}-%{version}/
+rm -f source_files.t
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -87,9 +88,12 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %{_usrsrc}/debug/%{name}-%{version}
 
+%files src
+%{_usrsrc}/%{name}-%{version}
+
 %changelog
 * Thu May 02 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-3
-- Just package everything in /usr/src/fio-$version
+- Create an fio-src package for spdk
 - Adjust BuildRequires: for SLES 12.3
 
 * Fri Apr 05 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-2
