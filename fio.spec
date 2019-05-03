@@ -42,11 +42,11 @@ otherwise parameters given to them overriding that setting is given.
 The typical use of fio is to write a job file matching the io load
 one wants to simulate.
 
-%package devel
-Summary:	FIO devel package
-
-%description devel
-FIO devel
+#%package devel
+#Summary:	FIO devel package
+#
+#%description devel
+#FIO devel
 
 %package src
 Summary:	FIO sources package
@@ -85,8 +85,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 %{_datadir}/%{name}/*
 
-%files devel
-%{_usrsrc}/debug/%{name}-%{version}
+#%files devel
+#%{_usrsrc}/debug/%{name}-%{version}
 
 %files src
 %{_usrsrc}/%{name}-%{version}
