@@ -28,7 +28,7 @@ RUN zypper --non-interactive install make rpm-build curl createrepo git    \
 RUN zypper --non-interactive install libpmem-devel libaio-devel     \
                                      libpmemblk-devel librbd-devel  \
                                      libnuma-devel zlib-devel       \
-                                     librdmacm-devel
+                                     rdma-core-devel
 
 # force an upgrade to get any newly built RPMs
 ARG CACHEBUST=1
