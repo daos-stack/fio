@@ -1,6 +1,6 @@
 Name:		fio
 Version:	3.3
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Multithreaded IO generation tool
 
 Group:		Applications/System
@@ -19,7 +19,7 @@ BuildRequires:	libpmemblk-devel
 %if (0%{?rhel} >= 7)
 BuildRequires:	librbd1-devel
 %else
-%if (0%{?suse_version} > 1315)
+%if (0%{?suse_version} >= 1315)
 BuildRequires:	librbd-devel
 %endif
 %endif
@@ -27,7 +27,7 @@ BuildRequires:	librbd-devel
 %if (0%{?rhel} >= 7)
 BuildRequires:	numactl-devel
 %else
-%if (0%{?suse_version} > 1315)
+%if (0%{?suse_version} >= 1315)
 BuildRequires:	libnuma-devel
 %endif
 BuildRequires:	librdmacm-devel
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_usrsrc}/%{name}-%{version}
 
 %changelog
+* Tue May 14 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-4
+- Fix SLES 12.3 OS conditionals >= 1315
+
 * Thu May 02 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-3
 - Create an fio-src package for spdk
 - Adjust BuildRequires: for SLES 12.3
