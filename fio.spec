@@ -1,6 +1,6 @@
 Name:		fio
 Version:	3.3
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Multithreaded IO generation tool
 
 Group:		Applications/System
@@ -16,10 +16,22 @@ BuildRequires:	zlib-devel
 BuildRequires:	libpmem-devel
 BuildRequires:	libpmemblk-devel
 %endif
+%if (0%{?rhel} >= 7)
 BuildRequires:	librbd1-devel
+%else
+%if (0%{?suse_version} > 1315)
+BuildRequires:	librbd-devel
+%endif
+%endif
 %ifnarch %{arm} s390 s390x
+%if (0%{?rhel} >= 7)
 BuildRequires:	numactl-devel
+%else
+%if (0%{?suse_version} > 1315)
+BuildRequires:	libnuma-devel
+%endif
 BuildRequires:	librdmacm-devel
+%endif
 %endif
 
 %description
@@ -30,14 +42,23 @@ otherwise parameters given to them overriding that setting is given.
 The typical use of fio is to write a job file matching the io load
 one wants to simulate.
 
-%package devel
-Summary:	FIO devel package
+#%package devel
+#Summary:	FIO devel package
+#
+#%description devel
+#FIO devel
 
-%description devel
-FIO devel
+%package src
+Summary:	FIO sources package
+
+%description src
+FIO sources
 
 %prep
 %setup -q
+find . -type f > source_files.txt
+# fix hard-coded /usr/bin/bash
+sed -i -e "s|/usr/bin/bash|$(command -v bash)|g" tools/genfio
 
 %build
 ./configure --disable-optimizations
@@ -46,19 +67,13 @@ EXTFLAGS="$RPM_OPT_FLAGS" make V=1 %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make install prefix=%{_prefix} mandir=%{_mandir} DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}
-cp config-host.h minmax.h helpers.h \
-  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/compiler/
-cp compiler/compiler.h compiler/compiler-gcc4.h \
-  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/compiler/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/lib/
-cp lib/types.h lib/ffz.h \
-  $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/lib/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/os/
-cp os/os-linux-syscall.h $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/os/
-mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/oslib/
-cp oslib/getopt.h $RPM_BUILD_ROOT%{_usrsrc}/debug/%{name}-%{version}/oslib/
+mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/%{name}-%{version}/
+while read f; do
+    mkdir -p $RPM_BUILD_ROOT%{_usrsrc}/%{name}-%{version}/${f%/*}
+    ln $f $RPM_BUILD_ROOT%{_usrsrc}/%{name}-%{version}/$f
+done < source_files.txt
+ln config-host.h $RPM_BUILD_ROOT%{_usrsrc}/%{name}-%{version}/
+rm -f source_files.t
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -72,10 +87,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 %{_datadir}/%{name}/*
 
-%files devel
-%{_usrsrc}/debug/%{name}-%{version}/config-host.h
+#%files devel
+#%{_usrsrc}/debug/%{name}-%{version}
+
+%files src
+%{_usrsrc}/%{name}-%{version}
 
 %changelog
+* Thu May 02 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-3
+- Create an fio-src package for spdk
+- Adjust BuildRequires: for SLES 12.3
+- fix hard-coded /usr/bin/bash
+
 * Fri Apr 05 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-2
 - Add a (hacky) -devel subpackage to provide the source files
   that spdk wants
