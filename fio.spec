@@ -1,6 +1,6 @@
 Name:		fio
 Version:	3.3
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Multithreaded IO generation tool
 
 Group:		Applications/System
@@ -42,17 +42,11 @@ otherwise parameters given to them overriding that setting is given.
 The typical use of fio is to write a job file matching the io load
 one wants to simulate.
 
-#%package devel
-#Summary:	FIO devel package
-#
-#%description devel
-#FIO devel
+%package devel
+Summary:	FIO devel package
 
-%package src
-Summary:	FIO sources package
-
-%description src
-FIO sources
+%description devel
+FIO devel
 
 %prep
 %setup -q
@@ -87,13 +81,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 %{_datadir}/%{name}/*
 
-#%files devel
-#%{_usrsrc}/debug/%{name}-%{version}
 
-%files src
+%files devel
 %{_usrsrc}/%{name}-%{version}
 
 %changelog
+* Tue Jul 30 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-5
+- SUSE really wants source files in -devel, not -src
+
 * Tue May 14 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-4
 - Fix SLES 12.3 OS conditionals >= 1315
 
