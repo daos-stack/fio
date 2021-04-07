@@ -1,17 +1,19 @@
 Name:		fio
-Version:	3.3
-Release:	5%{?dist}
+Version:	3.26
+Release:	1%{?dist}
 Summary:	Multithreaded IO generation tool
 
 Group:		Applications/System
 License:	GPLv2
 URL:		http://git.kernel.dk/?p=fio.git;a=summary
 Source:		http://brick.kernel.dk/snaps/%{name}-%{version}.tar.bz2
+Patch0:		https://github.com/axboe/fio/compare/267b164..c363fdd.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	libaio-devel
 BuildRequires:	zlib-devel
+BuildRequires:	libuuid-devel
 %ifarch x86_64
 BuildRequires:	libpmem-devel
 BuildRequires:	libpmemblk-devel
@@ -50,6 +52,7 @@ FIO devel
 
 %prep
 %setup -q
+%patch0 -p1 -b .267b164..c363fdd.patch
 find . -type f > source_files.txt
 # fix hard-coded /usr/bin/bash
 sed -i -e "s|/usr/bin/bash|$(command -v bash)|g" tools/genfio
@@ -86,6 +89,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_usrsrc}/%{name}-%{version}
 
 %changelog
+* Wed Apr 07 2021 Jonathan Martinez Montes <jonathan.martinez.montes@intel.com> - 3.26-1
+- New upstream version
+- Add 267b164..c363fdd patch that adds DAOS support
+
 * Tue Jul 30 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-5
 - SUSE really wants source files in -devel, not -src
 
