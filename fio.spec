@@ -1,6 +1,6 @@
 Name:		fio
-Version:	3.3
-Release:	5%{?dist}
+Version:	3.20
+Release:	1%{?dist}
 Summary:	Multithreaded IO generation tool
 
 Group:		Applications/System
@@ -68,6 +68,7 @@ while read f; do
 done < source_files.txt
 ln config-host.h $RPM_BUILD_ROOT%{_usrsrc}/%{name}-%{version}/
 rm -f source_files.t
+sed -i -e '1s/python/python3/' %{buildroot}/usr/{src/fio-3.20/{t/{strided,steadystate_tests},tools/hist/fio-histo-log-pctiles},bin/fio-histo-log-pctiles}.py
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -86,6 +87,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_usrsrc}/%{name}-%{version}
 
 %changelog
+* Thu Nov 11 2021 Wang Shilong <shilong.wang@intel.com> 3.20-1
+- Rebuilt for breaking DAOS API change
+- New upstream version
+
 * Tue Jul 30 2019 Brian J. Murrell <brian.murrell@intel.com> 3.3-5
 - SUSE really wants source files in -devel, not -src
 
