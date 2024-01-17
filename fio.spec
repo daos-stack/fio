@@ -60,7 +60,7 @@ dnf download --arch=%{_arch} python3-tools
 rpm2cpio ./python3-tools-*.%{_arch}.rpm \
  | cpio -i --quiet --to-stdout ./usr/share/doc/packages/python3-core/Tools/scripts/pathfix.py \
  > /usr/bin/pathfix.py
-chmod 755 ./usr/bin/pathfix.py
+chmod 755 ./usr/bin/pathfix.py -i %{__python3}
 %endif
 
 pathfix.py -pn \
