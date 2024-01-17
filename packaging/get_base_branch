@@ -3,17 +3,20 @@
 # find the base branch of the current branch
 
 set -eux -o pipefail
-
-max_commits=${1:-200}
-base_branch_re=${2:-'^  origin/(master|release/)'}
-
-n=0
-while [ "$n" -lt "$max_commits" ]; do
-    if git branch -r --contains HEAD~$n | grep -E "$base_branch_re" | sed -e 's/^ *[^\/]*\///'; then
-        exit 0
+IFS=' ' read -r -a add_bases <<< "${1:-}"
+origin=origin
+mapfile -t all_bases < <(echo "master"
+                         git branch -r | sed -ne "/^  $origin\\/release\\/[0-9]/s/^  $origin\\///p")
+all_bases+=("${add_bases[@]}")
+TARGET="master"
+min_diff=-1
+for base in "${all_bases[@]}"; do
+    git rev-parse --verify "$origin/$base" &> /dev/null || continue
+    commits_ahead=$(git log --oneline "$origin/$base..HEAD" | wc -l)
+    if [ "$min_diff" -eq -1 ] || [ "$min_diff" -gt "$commits_ahead" ]; then
+        TARGET="$base"
+        min_diff=$commits_ahead
     fi
-    ((n++)) || true
 done
-
-echo "Could not find a base branch within $max_commits commits" >&2
-exit 1
+echo "$TARGET"
+exit 0
