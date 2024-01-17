@@ -36,6 +36,10 @@ BuildRequires:	libnuma-devel
 BuildRequires:	librdmacm-devel
 %endif
 %endif
+%if 0%{?suse_version}
+BuildRequires python3-tools
+BuildRequires python3-dnf
+%endif
 
 %if 0%{?suse_version}
 %global __debug_package 1
@@ -53,6 +57,8 @@ one wants to simulate.
 
 %prep
 %setup -q
+
+ls /usr/share/doc/packages/python3-core/Tools/scripts || true
 
 %if 0%{?suse_version}
 # Workaround to install skipped file pathfix.py from the python3-tools package
