@@ -42,7 +42,7 @@ BuildRequires:	platform-python-devel
 %endif
 %if 0%{?suse_version}
 BuildRequires:	python3-tools
-%global python_pathfix /usr/share/doc/packages/python3-core/Tools/scripts/pathfix.py$
+%global python_pathfix /usr/share/doc/packages/python3-core/Tools/scripts/pathfix.py
 %endif
 
 %if 0%{?suse_version}
