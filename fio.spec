@@ -70,10 +70,6 @@ one wants to simulate.
  t/*.py
 
 %build
-%if 0%{?suse_version}
-export CFLAGS="%{optflags} -fPIC -pie"
-export CXXFLAGS="%{optflags} -fPIC -pie"
-%endif
 ./configure --disable-optimizations
 env EXTFLAGS="$RPM_OPT_FLAGS" LDFLAGS="$RPM_LD_FLAGS" make V=1 %{?_smp_mflags}
 
