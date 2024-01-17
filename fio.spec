@@ -36,7 +36,7 @@ BuildRequires:	libnuma-devel
 BuildRequires:	librdmacm-devel
 %endif
 %endif
-if 0%{?rhel}
+%if 0%{?rhel}
 BuildRequires:	platform-python-devel
 %global python_pathfix /usr/bin/pathfix
 %endif
