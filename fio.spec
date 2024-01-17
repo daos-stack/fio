@@ -37,8 +37,8 @@ BuildRequires:	librdmacm-devel
 %endif
 %endif
 %if 0%{?suse_version}
-BuildRequires python3-tools
-BuildRequires python3-dnf
+BuildRequires:	python3-tools
+BuildRequires:	python3-dnf
 %endif
 
 %if 0%{?suse_version}
@@ -66,10 +66,10 @@ dnf download --arch=%{_arch} python3-tools
 rpm2cpio ./python3-tools-*.%{_arch}.rpm \
  | cpio -i --quiet --to-stdout ./usr/share/doc/packages/python3-core/Tools/scripts/pathfix.py \
  > /usr/bin/pathfix.py
-chmod 755 ./usr/bin/pathfix.py -i %{__python3}
+chmod 755 ./usr/bin/pathfix.py
 %endif
 
-pathfix.py -pn \
+pathfix.py -i %{__python3} -pn \
  doc/conf.py \
  tools/fio_jsonplus_clat2csv \
  tools/fiologparser.py \
