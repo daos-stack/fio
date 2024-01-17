@@ -9,7 +9,6 @@ Group:		Applications/System
 License:	GPLv2
 URL:		http://git.kernel.dk/?p=fio.git;a=summary
 Source:		http://brick.kernel.dk/snaps/%{name}-%{version}.tar.bz2
-Source1:	pathfix.py
 
 BuildRequires:	gcc
 BuildRequires:	daos-devel
@@ -38,7 +37,7 @@ BuildRequires:	librdmacm-devel
 %endif
 %endif
 
-%if (0%{?suse_version} > 0)
+%if 0%{?suse_version}
 %global __debug_package 1
 %global _debuginfo_subpackages 0
 %debug_package
@@ -54,7 +53,17 @@ one wants to simulate.
 
 %prep
 %setup -q
-%{__python3} %{SOURCE1} -i %{__python3} -pn \
+
+%if 0%{?suse_version}
+# Workaround to install skipped file pathfix.py from the python3-tools package
+dnf download --arch=%{_arch} python3-tools
+rpm2cpio ./python3-tools-*.%{_arch}.rpm \
+ | cpio -i --quiet --to-stdout ./usr/share/doc/packages/python3-core/Tools/scripts/pathfix.py \
+ > /usr/bin/pathfix.py
+chmod 755 ./usr/bin/pathfix.py
+%endif
+
+pathfix.py -pn \
  doc/conf.py \
  tools/fio_jsonplus_clat2csv \
  tools/fiologparser.py \
@@ -63,6 +72,10 @@ one wants to simulate.
  t/*.py
 
 %build
+%if 0%{?suse_version}
+export CFLAGS="%{optflags} -fPIC -pie"
+export CXXFLAGS="%{optflags} -fPIC -pie"
+%endif
 ./configure --disable-optimizations
 env EXTFLAGS="$RPM_OPT_FLAGS" LDFLAGS="$RPM_LD_FLAGS" make V=1 %{?_smp_mflags}
 
