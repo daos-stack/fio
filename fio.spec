@@ -38,11 +38,11 @@ BuildRequires:	librdmacm-devel
 %endif
 %if 0%{?rhel}
 BuildRequires:	platform-python-devel
-%global python_pathfix /usr/bin/pathfix
+%global python_pathfix /usr/bin/pathfix.py
 %endif
 %if 0%{?suse_version}
 BuildRequires:	python3-tools
-%global python_pathfix /usr/share/doc/packages/python3-core/Tools/scripts
+%global python_pathfix /usr/share/doc/packages/python3-core/Tools/scripts/pathfix.py$
 %endif
 
 %if 0%{?suse_version}
@@ -61,9 +61,6 @@ one wants to simulate.
 
 %prep
 %setup -q
-
-ls /usr/share/doc/packages/python3-core/Tools/scripts || true
-
 %{__python3} %{python_pathfix} -i %{__python3} -pn \
  doc/conf.py \
  tools/fio_jsonplus_clat2csv \
