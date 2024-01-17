@@ -36,9 +36,13 @@ BuildRequires:	libnuma-devel
 BuildRequires:	librdmacm-devel
 %endif
 %endif
+if 0%{?rhel}
+BuildRequires:	platform-python-devel
+%global python_pathfix /usr/bin/pathfix
+%endif
 %if 0%{?suse_version}
 BuildRequires:	python3-tools
-BuildRequires:	python3-dnf
+%global python_pathfix /usr/share/doc/packages/python3-core/Tools/scripts
 %endif
 
 %if 0%{?suse_version}
@@ -60,16 +64,7 @@ one wants to simulate.
 
 ls /usr/share/doc/packages/python3-core/Tools/scripts || true
 
-%if 0%{?suse_version}
-# Workaround to install skipped file pathfix.py from the python3-tools package
-dnf download --arch=%{_arch} python3-tools
-rpm2cpio ./python3-tools-*.%{_arch}.rpm \
- | cpio -i --quiet --to-stdout ./usr/share/doc/packages/python3-core/Tools/scripts/pathfix.py \
- > /usr/bin/pathfix.py
-chmod 755 ./usr/bin/pathfix.py
-%endif
-
-pathfix.py -i %{__python3} -pn \
+%{__python3} %{python_pathfix} -i %{__python3} -pn \
  doc/conf.py \
  tools/fio_jsonplus_clat2csv \
  tools/fiologparser.py \
