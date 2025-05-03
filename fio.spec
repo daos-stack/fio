@@ -7,8 +7,8 @@ Summary:	Multithreaded IO generation tool
 
 Group:		Applications/System
 License:	GPLv2
-URL:		http://git.kernel.dk/?p=fio.git;a=summary
-Source:		http://brick.kernel.dk/snaps/%{name}-%{version}.tar.bz2
+URL:		https://git.kernel.dk/?p=fio.git;a=summary
+Source:		https://brick.kernel.dk/snaps/%{name}-%{version}.tar.bz2
 
 BuildRequires:	gcc
 BuildRequires:	daos-devel
